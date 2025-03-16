@@ -1,8 +1,8 @@
 {
-  "name": "himti-api",
+  "name": "defend-shoes-api",
   "version": "1.0.0",
   "main": "./src/index.ts",
-  "author": "Muhammad Fikri",
+  "author": "Ucupcupcup",
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.4.0",
