@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id           Int      @id @unique @default(autoincrement())
+  name         String   @db.VarChar(24)
+  email        String   @unique @db.VarChar(24)
+  password     String   @db.VarChar(64)
+  phone_number String   @db.VarChar(16)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  transaction Transactions[]
+
+  @@map("users")
+}
+
+model Transactions {
+  id           String              @id @unique @default(uuid()) @db.VarChar(36)
+  code         String              @unique @db.VarChar(16)
+  name         String              @db.VarChar(24)
+  email        String              @db.VarChar(24)
+  price        Decimal             @db.Decimal()
+  entry_at     DateTime?
+  estimated    DateTime?
+  phone_number String              @db.VarChar(16)
+  status       Transactions_status @default(unpaid)
+  createdAt    DateTime            @default(now()) @map("created_at")
+  updatedAt    DateTime            @default(now()) @updatedAt @map("updated_at")
+  created_by   Int
+
+  user               Users                @relation(fields: [created_by], references: [id])
+  TransactionsDetail TransactionsDetail[]
+
+  @@map("transactions")
+}
+
+model TransactionsDetail {
+  id             String   @id @unique @default(uuid()) @db.VarChar(36)
+  transaction_id String   @db.VarChar(36)
+  product_name   String   @db.VarChar(36)
+  photo          String   @db.VarChar(128)
+  price          Decimal
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
+
+  transaction Transactions @relation(fields: [transaction_id], references: [id])
+
+  @@map("transactions_detail")
+}
+
+enum Transactions_status {
+  paid
+  unpaid
+}
